@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citizen Complaint Management System</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f7f6;
+      color: #17201d;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      background: #073b2a;
+      color: white;
+      padding: 14px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .flag {
+      font-size: 30px;
+    }
+
+    .brand h1 {
+      font-size: 18px;
+      letter-spacing: .4px;
+    }
+
+    .brand p {
+      font-size: 12px;
+      opacity: .78;
+      margin-top: 3px;
+    }
+
+    .secure {
+      font-size: 12px;
+      opacity: .85;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #073b2a, #0b5d43);
+      color: white;
+      padding: 48px 20px 80px;
+      text-align: center;
+    }
+
+    .hero h2 {
+      font-size: clamp(28px, 5vw, 46px);
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      max-width: 720px;
+      margin: auto;
+      line-height: 1.7;
+      opacity: .9;
+    }
+
+    .container {
+      width: min(1000px, 92%);
+      margin: -45px auto 50px;
+      position: relative;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 15px 45px rgba(0,0,0,.10);
+      padding: clamp(22px, 4vw, 42px);
+    }
+
+    .section-title {
+      margin-bottom: 25px;
+    }
+
+    .section-title h3 {
+      font-size: 25px;
+      margin-bottom: 7px;
+    }
+
+    .section-title p {
+      color: #68736f;
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #29342f;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid #d7dfdb;
+      border-radius: 10px;
+      padding: 13px 14px;
+      font-size: 14px;
+      outline: none;
+      background: #fbfcfc;
+      transition: .2s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #0b6b4b;
+      box-shadow: 0 0 0 3px rgba(11,107,75,.10);
+      background: white;
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .consent {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      margin-top: 20px;
+      font-size: 13px;
+      color: #58645f;
+      line-height: 1.5;
+    }
+
+    .consent input {
+      width: auto;
+      margin-top: 3px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 24px;
+      border: 0;
+      border-radius: 11px;
+      padding: 15px;
+      background: #0b6b4b;
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .submit-btn:hover {
+      background: #084f38;
+      transform: translateY(-1px);
+    }
+
+    .submit-btn:disabled {
+      cursor: not-allowed;
+      opacity: .65;
+      transform: none;
+    }
+
+    .message {
+      display: none;
+      margin-top: 20px;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .error {
+      background: #fff0f0;
+      border: 1px solid #f0c5c5;
+      color: #9d2525;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 30px 10px;
+    }
+
+    .spinner {
+      width: 38px;
+      height: 38px;
+      border: 4px solid #d9e5df;
+      border-top-color: #0b6b4b;
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .result {
+      display: none;
+    }
+
+    .success-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .success-icon {
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #e4f4ed;
+      color: #0b6b4b;
+      font-size: 31px;
+      margin: 0 auto 14px;
+    }
+
+    .success-header h3 {
+      font-size: 27px;
+      margin-bottom: 6px;
+    }
+
+    .success-header p {
+      color: #69756f;
+      font-size: 14px;
+    }
+
+    .complaint-id {
+      background: #f1f7f4;
+      border: 1px solid #d5e7de;
+      border-radius: 12px;
+      padding: 18px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .complaint-id span {
+      display: block;
+      font-size: 11px;
+      color: #718078;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 7px;
+    }
+
+    .complaint-id strong {
+      font-size: 25px;
+      color: #073b2a;
+      letter-spacing: 1px;
+    }
+
+    .status {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 7px 12px;
+      border-radius: 20px;
+      background: #e4f4ed;
+      color: #0b6b4b;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .result-box {
+      background: #fafbfb;
+      border: 1px solid #e0e6e3;
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .result-box .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #78837e;
+      letter-spacing: .7px;
+      margin-bottom: 8px;
+    }
+
+    .result-box .value {
+      font-size: 16px;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .priority {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 6px;
+      background: #fff2d8;
+      color: #865600;
+      font-size: 12px;
+    }
+
+    .detail-box {
+      border: 1px solid #e0e6e3;
+      border-radius: 12px;
+      padding: 19px;
+      margin-top: 15px;
+    }
+
+    .detail-box h4 {
+      font-size: 14px;
+      margin-bottom: 9px;
+    }
+
+    .detail-box p {
+      color: #59655f;
+      line-height: 1.65;
+      font-size: 14px;
+    }
+
+    .new-btn {
+      margin-top: 24px;
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #0b6b4b;
+      color: #0b6b4b;
+      background: white;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #78827e;
+      font-size: 12px;
+    }
+
+    @media (max-width: 700px) {
+      .topbar {
+        padding: 13px 4%;
+      }
+
+      .secure {
+        display: none;
+      }
+
+      .grid,
+      .result-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .full {
+        grid-column: auto;
+      }
+
+      .hero {
+        padding: 38px 18px 70px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="flag">🇵🇰</div>
+      <div>
+        <h1>Citizen Complaint Management System</h1>
+        <p>AI-Powered Complaint Analysis & Resolution</p>
+      </div>
+    </div>
+    <div class="secure">Secure • Automated • Transparent</div>
+  </header>
+
+  <section class="hero">
+    <h2>Submit Your Complaint</h2>
+    <p>
+      Submit your complaint using the form below. Our AI-powered system
+      will analyze your complaint, determine its category and priority,
+      and provide a recommended course of action.
+    </p>
+  </section>
+
+  <main class="container">
+    <section class="card">
+
+      <div id="formSection">
+        <div class="section-title">
+          <h3>Complaint Details</h3>
+          <p>Please provide accurate information so your complaint can be processed efficiently.</p>
+        </div>
+
+        <form id="complaintForm">
+
+          <div class="grid">
+
+            <div class="field">
+              <label for="fullName">Full Name *</label>
+              <input id="fullName" name="Full Name" type="text" required>
+            </div>
+
+            <div class="field">
+              <label for="email">Email *</label>
+              <input id="email" name="Email" type="email" required>
+            </div>
+
+            <div class="field">
+              <label for="phone">Phone Number *</label>
+              <input id="phone" name="Phone Number" type="tel" required>
+            </div>
+
+            <div class="field">
+              <label for="category">Complaint Category *</label>
+              <select id="category" name="Complaint Category" required>
+                <option value="">Select category</option>
+                <option>Water</option>
+                <option>Electricity</option>
+                <option>Gas</option>
+                <option>Roads & Infrastructure</option>
+                <option>Sanitation</option>
+                <option>Public Service</option>
+                <option>Education</option>
+                <option>Healthcare</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="location">Location / Area *</label>
+              <input id="location" name="Location / Area" type="text" required>
+            </div>
+
+            <div class="field">
+              <label for="contact">Preferred Contact Method *</label>
+              <select id="contact" name="Contact Method" required>
+                <option value="">Select method</option>
+                <option>Email</option>
+                <option>Phone</option>
+                <option>Either</option>
+              </select>
+            </div>
+
+            <div class="field full">
+              <label for="subject">Complaint Subject *</label>
+              <input id="subject" name="Complaint Subject" type="text" required>
+            </div>
+
+            <div class="field full">
+              <label for="description">Complaint Description *</label>
+              <textarea id="description" name="Complaint Description"
+                placeholder="Describe your complaint clearly..." required></textarea>
+            </div>
+
+            <div class="field full">
+              <label for="attachment">Attachment (optional)</label>
+              <input id="attachment" type="file">
+            </div>
+
+          </div>
+
+          <label class="consent">
+            <input id="consent" type="checkbox" required>
+            <span>I confirm that the information provided is accurate and complete.</span>
+          </label>
+
+          <button class="submit-btn" id="submitBtn" type="submit">
+            SUBMIT COMPLAINT
+          </button>
+
+          <div id="errorMessage" class="message error"></div>
+
+        </form>
+
+        <div id="loading" class="loading">
+          <div class="spinner"></div>
+          <h3>AI Analysis in Progress...</h3>
+          <p style="margin-top:8px;color:#718078;">
+            Your complaint is being analyzed and processed.
+          </p>
+        </div>
+      </div>
+
+      <div id="resultSection" class="result">
+
+        <div class="success-header">
+          <div class="success-icon">✓</div>
+          <h3>Complaint Submitted Successfully</h3>
+          <p>Your complaint has been received and analyzed by our AI system.</p>
+        </div>
+
+        <div class="complaint-id">
+          <span>Complaint ID</span>
+          <strong id="resultId">CMP-2026-00000</strong>
+          <div>
+            <span class="status" id="resultStatus">AI Analysis Completed</span>
+          </div>
+        </div>
+
+        <div class="result-grid">
+          <div class="result-box">
+            <div class="label">Category</div>
+            <div class="value" id="resultCategory">—</div>
+          </div>
+
+          <div class="result-box">
+            <div class="label">Priority</div>
+            <div class="value">
+              <span class="priority" id="resultPriority">—</span>
+            </div>
+          </div>
+
+          <div class="result-box">
+            <div class="label">Estimated Resolution</div>
+            <div class="value" id="resultTime">—</div>
+          </div>
+        </div>
+
+        <div class="detail-box">
+          <h4>AI Summary</h4>
+          <p id="resultSummary">—</p>
+        </div>
+
+        <div class="detail-box">
+          <h4>Recommended Action</h4>
+          <p id="resultAction">—</p>
+        </div>
+
+        <button class="new-btn" id="newComplaint">
+          SUBMIT ANOTHER COMPLAINT
+        </button>
+
+      </div>
+
+    </section>
+  </main>
+
+  <footer>
+    © 2026 Citizen Complaint Management System • Developed by Junaid Zulfiqar
+  </footer>
+
+  <script>
+    /*
+      IMPORTANT:
+      Replace this URL with your n8n WEBHOOK PRODUCTION URL.
+
+      Example:
+      https://junaidzulfiqarrr.app.n8n.cloud/webhook/ai-complaint
+    */
+    const N8N_WEBHOOK_URL = "https://junaidzulfiqarrr.app.n8n.cloud/webhook/ai-complain";
+
+    const form = document.getElementById("complaintForm");
+    const formSection = document.getElementById("formSection");
+    const resultSection = document.getElementById("resultSection");
+    const loading = document.getElementById("loading");
+    const submitBtn = document.getElementById("submitBtn");
+    const errorMessage = document.getElementById("errorMessage");
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      errorMessage.style.display = "none";
+
+      const attachment = document.getElementById("attachment").files[0];
+
+      const payload = {
+        "Full Name": document.getElementById("fullName").value.trim(),
+        "Email": document.getElementById("email").value.trim(),
+        "Phone Number": document.getElementById("phone").value.trim(),
+        "Complaint Category": document.getElementById("category").value,
+        "Location / Area": document.getElementById("location").value.trim(),
+        "Complaint Subject": document.getElementById("subject").value.trim(),
+        "Complaint Description": document.getElementById("description").value.trim(),
+        "Contact Method": document.getElementById("contact").value,
+        "Attachment": attachment ? attachment.name : null
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "PROCESSING...";
+      form.style.display = "none";
+      loading.style.display = "block";
+
+      try {
+        const response = await fetch(N8N_WEBHOOK_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          throw new Error("n8n returned HTTP " + response.status);
+        }
+
+        const data = await response.json();
+
+        const result = data.data || data;
+
+        document.getElementById("resultId").textContent =
+          result.complaint_id || "Not generated";
+
+        document.getElementById("resultStatus").textContent =
+          result.status || "AI Analysis Completed";
+
+        document.getElementById("resultCategory").textContent =
+          result.ai_category || result.category || "—";
+
+        document.getElementById("resultPriority").textContent =
+          result.priority || "—";
+
+        document.getElementById("resultTime").textContent =
+          result.estimated_resolution || "—";
+
+        document.getElementById("resultSummary").textContent =
+          result.ai_summary || result.summary || "—";
+
+        document.getElementById("resultAction").textContent =
+          result.recommended_action || "—";
+
+        loading.style.display = "none";
+        resultSection.style.display = "block";
+
+      } catch (error) {
+        console.error(error);
+
+        form.style.display = "block";
+        loading.style.display = "none";
+
+        showError(
+          "Unable to submit the complaint. Please check your n8n Production Webhook URL and CORS settings, then try again."
+        );
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = "SUBMIT COMPLAINT";
+      }
+    });
+
+    document.getElementById("newComplaint").addEventListener("click", function () {
+      resultSection.style.display = "none";
+      formSection.style.display = "block";
+      form.style.display = "block";
+      form.reset();
+      submitBtn.disabled = false;
+      submitBtn.textContent = "SUBMIT COMPLAINT";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.style.display = "block";
+    }
+  </script>
+
+</body>
+</html>
