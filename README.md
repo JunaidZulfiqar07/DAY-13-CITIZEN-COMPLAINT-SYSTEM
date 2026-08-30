@@ -2,7 +2,7 @@
 
 An AI-powered complaint intake and triage system built for Pakistani citizens to report civic issues (water, electricity, gas, sanitation, roads, etc.) and get an instant, AI-generated analysis — category, priority, recommended action, and estimated resolution time — with every complaint automatically logged for the relevant department.
 
-Part of my **30-Day n8n Automation Challenge**.
+Part of my **15-Day n8n Automation Challenge**.
 
 **Repo:** https://github.com/JunaidZulfiqar07/DAY-13-CITIZEN-COMPLAINT-SYSTEM
 **Workflow:** Built entirely in [n8n](https://n8n.io)
@@ -72,7 +72,7 @@ Citizen Form → n8n Webhook → Extract & ID → AI Agent → Merge Results →
 ## 📌 Notes
 
 - This is a portfolio/demo project — for real-world government deployment it would need role-based access control, audit logging, and input validation hardening.
-- Built as part of a 30-day n8n automation challenge.
+- Built as part of a 15-day n8n automation challenge.
 
 ---
 
